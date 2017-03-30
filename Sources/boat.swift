@@ -1,10 +1,10 @@
 public class Boat
 {
 	//Symbol represenation
-	static var symbol:Character = "B"
+	class var symbol: String {return " "}
 }
 
-public class sub : Boat
+public class Sub : Boat
 {
-	static var symbol:Character = "Ө"
+	override class var symbol: String { return "Ө" }
 }

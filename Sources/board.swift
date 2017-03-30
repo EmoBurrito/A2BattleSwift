@@ -7,16 +7,20 @@ public class Board
 	let XAXIS = 9
 	///The height of the board, minus 1 since arrays are 0 based
 	let YAXIS = 9
-	///Unfired empty, sub, carrier, and tug
+
+	//The difference between "unfired" and "fired". Doesn't like static?
+	let FIRE_DIFFERENCE = 10
+
+	///Unfired empty, Sub, carrier, and tug
 	static let UE = 10
 	static let US = 11
 	static let UC = 12
 	static let UT = 13
-	///Fired empty, sub, carrier, and tug
-	static let FE = 20
-	static let FS = 21
-	static let FC = 22
-	static let FT = 23
+	///Fired empty, Sub, carrier, and tug
+	let FE = 20
+	let FS = 21
+	let FC = 22
+	let FT = 23
 
 	///A two dimensional area containing the board area
 	// TODO: Generate this
@@ -76,7 +80,7 @@ public class Board
 					switch area[i][j]
 					{
 						case FE: rowText += " "
-						case FS: rowText += sub.symbol
+						case FS: rowText += Sub.symbol
 						case FC: rowText += "?"
 						case FT: rowText += "?"
 						default: rowText += "?" //Should never happen
@@ -85,5 +89,56 @@ public class Board
 			}
 			print(rowText)
 		}
+	}
+
+	//Used to prompt the player where they want to shoot
+	func prompt()
+	{
+		//Get input
+		print("Choose a letter:")
+		var letterTarget : String = String(readLine()!)!
+		//Parses the input for only the first character, then casts to uppercase
+		letterTarget = String(letterTarget[letterTarget.index(letterTarget.startIndex, offsetBy: 0)]).uppercased()
+
+		print("Choose a number:")
+		let numberTarget : Int = Int(readLine()!)!
+
+		//TODO Check if input is valid
+		if true
+		{
+			//Shoot
+			shoot(letter : letterTarget, number : numberTarget)
+		}
+	}
+
+	//Shoot at target
+	func shoot(letter : String, number : Int)
+	{
+		//Cheat code. Used to nuke entire board.
+		if letter == "Z" && number == 9
+		{
+			for i in 0...YAXIS
+			{
+				for j in 0...XAXIS
+				{
+					area[i][j] += FIRE_DIFFERENCE;
+				}
+			}
+		}
+		else
+		{
+			//area[number][letter]
+
+			//Get the Unicode value of the letter, starting with A=0, B=1, C=2, etc.
+			var yAxis = 0
+			for code in String(letter).utf8 { yAxis=(Int(code)-65) }
+
+			print("Shooting at [\(number)][\(yAxis)]")
+
+			area[yAxis][number] += FIRE_DIFFERENCE;
+		}
+
+		//Display the updated board
+		display()
 	}
 }

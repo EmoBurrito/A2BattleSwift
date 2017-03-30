@@ -4,3 +4,5 @@ print("######################################")
 
 var myBoard = Board()
 myBoard.display()
+
+myBoard.prompt()

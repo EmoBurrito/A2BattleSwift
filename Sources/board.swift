@@ -1,8 +1,12 @@
+import Foundation
+
 /// A board to play on. Contains ships for the players to shoot at.
 public class Board
 {
 	/// The number of boats to have on the board
-	let BOATS = 5
+	let SUBS = 2
+	let CARRIERS = 2
+	let TUGS = 2
 	///The width of the board, minus 1 since arrays are 0 based
 	let XAXIS = 9
 	///The height of the board, minus 1 since arrays are 0 based
@@ -36,18 +40,6 @@ public class Board
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE],
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE]
 ]
-
-	/**
-		Ships: 
-
-		- Submarine: Ө
-		- Aircraft Carrier: Ш
-		- Tugboat: Ӝ
-	 */
-	enum Boats
-	{
-		case sub, carrier, tug
-	}
 
 	 /**
 	 	Prints the board out to the terminal.
@@ -140,5 +132,91 @@ public class Board
 
 		//Display the updated board
 		display()
+	}
+
+	//TODO Make this part of an initializer
+	func populate()
+	{
+		//Create a sub
+		var mySub = Sub()
+
+		//Pick a spot on the board.
+		//TODO: Check if already occupied
+
+		//Add subs
+		for _ in 1...9
+		{
+			//TODO make a function pointer out of all of this
+			let x = random() % XAXIS
+			let y = random() % YAXIS
+
+			if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
+			{
+				for i in 1...Sub.length
+				{
+					if x+Sub.length < XAXIS //Place the ship here if there is room
+					{
+						area[y-1][x+i-1] = Board.US //Turns UE into US
+						print("Putting at \(y-1),\(x+i-1)")
+					}
+					else
+					{
+						area[y-1][x-i-1] = Board.US //Turns UE into US
+						print("Putting at \(y-1),\(x-i-1)")
+					}
+				}		
+			}
+			else
+			{
+				for i in 1...Sub.length
+				{
+					if y+Sub.length < YAXIS //Place the ship here if there is room
+					{
+						area[y+i-1][x-1] = Board.US //Turns UE into US
+						print("Putting at \(y+i-1),\(x+i-1)")
+					}
+					else
+					{
+						area[y-i-1][x-1] = Board.US //Turns UE into US
+						print("Putting at \(y-i-1),\(x-i-1)")
+					}
+				}
+			}
+		}
+		//Add Carriers
+		for _ in 1...CARRIERS
+		{
+			let x = random() % XAXIS
+			let y = random() % YAXIS
+
+			do //Attempt to put the boat anywhere, but may out of bounds
+			{
+				if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
+				{
+					for i in 1...Sub.length
+					{
+						area[y-1][x+i-1] = Board.US //Turns UE into US
+						print("Putting at \(y-1),\(x+i-1)")
+					}		
+				}
+				else
+				{
+					for i in 1...Sub.length
+					{
+						area[y+i-1][x-1] = Board.US
+						print("Putting at \(y-1),\(x+i-1)")
+					}
+				}
+			}
+			catch 
+			{
+
+			}
+		}
+		//Add tugboats
+		for _ in 1...TUGS
+		{
+			
+		}
 	}
 }

@@ -13,7 +13,7 @@ public class Boat
 public class Sub : Boat
 {
 	override class var symbol: String { return "Ө" }
-	override class var length: Int {return 3}
+	override class var length: Int {return 3} //TODO Why don't I just return the length of the array?
 
 	var hits = [false, false, false] //Yet to be used
 }

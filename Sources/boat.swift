@@ -4,6 +4,10 @@ public class Boat
 	//Reeeeally wishing abstract classes were a thing
 	class var symbol: String {return " "}
 	class var length: Int {return 0}
+
+	//Should boats know their location, as well as if they've been hit or not?
+	// We should also be able to write a function so the boat knows how many times
+	//it can be hit, based on its length
 }
 
 public class Sub : Boat

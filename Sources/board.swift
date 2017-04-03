@@ -4,9 +4,10 @@ import Foundation
 public class Board
 {
 	/// The number of boats to have on the board
-	let SUBS = 2
-	let CARRIERS = 2
-	let TUGS = 2
+	// generate a random sub, carrier, or tug, to a max of 5 boats
+	var SUBS = 0 // between 1-5 subs
+	var CARRIERS = 0 // between 1-5 carriers
+	var TUGS = 0 // between 1-5 tugboats
 	///The width of the board, minus 1 since arrays are 0 based
 	let XAXIS = 9
 	///The height of the board, minus 1 since arrays are 0 based
@@ -41,6 +42,21 @@ public class Board
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE]
 ]
 
+	//Generate five boats: a random grouping of subs, carriers, and tugboats.
+	func generate_boats()
+	{
+		for _ in 1...5
+		{
+			let rand = Int(random() % 3 + 1) //random number between 1 and 3
+			switch rand
+			{
+			case 1: SUBS += 1
+			case 2: CARRIERS += 1
+			case 3: TUGS += 1
+			default: break //should never hit this case
+			}
+		}
+	}
 	 /**
 	 	Prints the board out to the terminal.
 	  */
@@ -144,7 +160,7 @@ public class Board
 		//TODO: Check if already occupied
 
 		//Add subs
-		for _ in 1...9
+		for _ in 1...SUBS
 		{
 			//TODO make a function pointer out of all of this
 			let x = random() % XAXIS
@@ -164,7 +180,7 @@ public class Board
 						area[y-1][x-i-1] = Board.US //Turns UE into US
 						print("Putting at \(y-1),\(x-i-1)")
 					}
-				}		
+				}
 			}
 			else
 			{
@@ -197,7 +213,7 @@ public class Board
 					{
 						area[y-1][x+i-1] = Board.US //Turns UE into US
 						print("Putting at \(y-1),\(x+i-1)")
-					}		
+					}
 				}
 				else
 				{
@@ -208,7 +224,7 @@ public class Board
 					}
 				}
 			}
-			catch 
+			catch
 			{
 
 			}
@@ -216,7 +232,7 @@ public class Board
 		//Add tugboats
 		for _ in 1...TUGS
 		{
-			
+
 		}
 	}
 }

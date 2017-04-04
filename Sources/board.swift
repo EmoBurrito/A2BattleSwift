@@ -304,4 +304,9 @@ public class Board
 				}
 			}
 	}
+
+	func victoryCheck() -> Bool
+	{
+		return false
+	}
 }

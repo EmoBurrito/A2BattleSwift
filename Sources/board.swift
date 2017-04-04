@@ -195,7 +195,7 @@ public class Board
 		//Pick random starting point
 		let x = random() % XAXIS
 		let y = random() % YAXIS
-		print(y, x)
+		// print(y, x) //For debug
 
 		if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
 			{
@@ -203,12 +203,9 @@ public class Board
 				//borders, unfortunately
 				if x+type(of: boat).length < XAXIS-1
 				{
-
 					for i in 0...type(of: boat).length
 					{
-						//For Debug
-						print("X + sublength: \(x+type(of: boat).length)")
-						print("Putting at \(y),\(x+i)")
+						// print("Putting at \(y),\(x+i)") //For Debug
 						area[y][x+i] = Board.US //Turns UE into US, UC, UT, etc.
 					}
 				}
@@ -217,8 +214,7 @@ public class Board
 
 					for i in 0...type(of: boat).length
 					{
-						print("X + sublength: \(x-type(of: boat).length)")
-						print("Putting at \(y),\(x-i)")
+						// print("Putting at \(y),\(x-i)")
 						area[y][x-i] = Board.US
 					}
 				}
@@ -227,11 +223,9 @@ public class Board
 			{
 				if y+type(of: boat).length < YAXIS-1
 				{
-
 					for i in 0...type(of: boat).length
 					{
-						print("Y + sublength: \(y+type(of: boat).length)")
-						print("Putting at \(y+i),\(x)")
+						// print("Putting at \(y+i),\(x)")
 						area[y+i][x] = Board.US
 					}
 				}
@@ -240,8 +234,7 @@ public class Board
 
 					for i in 0...type(of: boat).length
 					{
-						print("Y + sublength: \(y-type(of: boat).length)")
-						print("Putting at \(y-i),\(x)")
+						// print("Putting at \(y-i),\(x)")
 						area[y-i][x] = Board.US
 					}
 				}

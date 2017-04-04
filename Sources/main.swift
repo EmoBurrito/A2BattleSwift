@@ -8,7 +8,7 @@ myBoard.display()
 
 
 myBoard.populate()
-var mySub = Sub()
-myBoard.add(boat : mySub)
+//var mySub = Sub()
+//myBoard.add(boat : mySub)
 
 myBoard.prompt()

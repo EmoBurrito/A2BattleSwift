@@ -5,9 +5,9 @@ public class Board
 {
 	/// The number of boats to have on the board
 	// generate a random sub, carrier, or tug, to a max of 5 boats
-	var SUBS = 1 // between 1-5 subs
-	var CARRIERS = 1 // between 1-5 carriers
-	var TUGS = 1 // between 1-5 tugboats
+	var SUBS = 0 // between 1-5 subs, but we can have none as well (go go random)
+	var CARRIERS = 0 // between 1-5 carriers
+	var TUGS = 0 // between 1-5 tugboats
 	///The width of the board, minus 1 since arrays are 0 based
 	let XAXIS = 9
 	///The height of the board, minus 1 since arrays are 0 based
@@ -42,21 +42,56 @@ public class Board
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE]
 ]
 
-	//Generate five boats: a random grouping of subs, carriers, and tugboats.
-	func generate_boats()
+	//Generate boats and add them to the board
+	func fill_harbor()
 	{
+		//Make five boats!
 		for _ in 0...4
 		{
+			srand( UInt32( time( nil ) ) )
 			let rand = Int(random() % 3 + 1) //random number between 1 and 3
 			switch rand
-			{
+			{//based on the random we generated, add to our boat counters
 				case 1: SUBS += 1
 				case 2: CARRIERS += 1
 				case 3: TUGS += 1
 				default: break //should never hit this case
 			}
 		}
+		//now, let's instantiate those boats!
+		build_boats(subs:SUBS, cars:CARRIERS, tugs:TUGS)
 	}
+	/*
+		Once we've made our random boats, instantiate them and fill the harbor
+	*/
+	func build_boats(subs:Int, cars:Int, tugs:Int)
+	{
+		if subs != 0
+		{
+			for _ in 0...subs
+			{
+				let s = Sub()
+				add(boat:s)
+			}
+		}
+		if cars != 0
+		{
+			for _ in 0...cars
+			{
+				let c = Carrier()
+				add(boat:c)
+			}
+		}
+		if tugs != 0
+		{
+			for _ in 0...tugs
+			{
+				let t = Tug()
+				add(boat:t)
+			}
+		}
+	}
+
 	 /**
 	 	Prints the board out to the terminal.
 	  */
@@ -157,62 +192,62 @@ public class Board
 
 		//Pick a spot on the board.
 		//TODO: Check if already occupied
-
+		fill_harbor()
 		//Add subs
-		for _ in 1...9
-		{
-			//TODO make a function pointer out of all of this
-			//TODO Check if another boat is there
-			let x = random() % XAXIS
-			let y = random() % YAXIS
-
-			if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
-			{
-				if x+Sub.length < XAXIS-1 //Check to see if it'll even fit first. This will cause boats to avoid borders, unfortunately
-				{
-					
-					for i in 1...Sub.length
-					{
-						print("X + sublength: \(x+Sub.length)")
-						print("Putting at \(y-1),\(x+i-1)")
-						area[y-1][x+i-1] = Board.US //Turns UE into US
-					}
-				}
-				else
-				{
-					
-					for i in 1...Sub.length
-					{
-						print("X + sublength: \(x+Sub.length)")
-						print("Putting at \(y-1),\(x-i-1)")
-						area[y-1][x-i-1] = Board.US //Turns UE into US
-					}
-				}
-			}
-			else
-			{
-				if y+Sub.length < YAXIS-1 //Check to see if it'll even fit first. This will cause boats to avoid borders, unfortunately
-				{
-					
-					for i in 1...Sub.length
-					{
-						print("Y + sublength: \(y+Sub.length)")
-						print("Putting at \(y+i-1),\(x-1)")
-						area[y+i-1][x-1] = Board.US //Turns UE into US
-					}
-				}
-				else
-				{
-					
-					for i in 1...Sub.length
-					{
-						print("Y + sublength: \(y+Sub.length)")
-						print("Putting at \(y-i-1),\(x-1)")
-						area[y-i-1][x-1] = Board.US //Turns UE into US
-					}
-				}
-			}
-		}
+		// for _ in 1...9
+		// {
+		// 	//TODO make a function pointer out of all of this
+		// 	//TODO Check if another boat is there
+		// 	let x = random() % XAXIS
+		// 	let y = random() % YAXIS
+		//
+		// 	if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
+		// 	{
+		// 		if x+Sub.length < XAXIS-1 //Check to see if it'll even fit first. This will cause boats to avoid borders, unfortunately
+		// 		{
+		//
+		// 			for i in 1...Sub.length
+		// 			{
+		// 				print("X + sublength: \(x+Sub.length)")
+		// 				print("Putting at \(y-1),\(x+i-1)")
+		// 				area[y-1][x+i-1] = Board.US //Turns UE into US
+		// 			}
+		// 		}
+		// 		else
+		// 		{
+		//
+		// 			for i in 1...Sub.length
+		// 			{
+		// 				print("X + sublength: \(x+Sub.length)")
+		// 				print("Putting at \(y-1),\(x-i-1)")
+		// 				area[y-1][x-i-1] = Board.US //Turns UE into US
+		// 			}
+		// 		}
+		// 	}
+		// 	else
+		// 	{
+		// 		if y+Sub.length < YAXIS-1 //Check to see if it'll even fit first. This will cause boats to avoid borders, unfortunately
+		// 		{
+		//
+		// 			for i in 1...Sub.length
+		// 			{
+		// 				print("Y + sublength: \(y+Sub.length)")
+		// 				print("Putting at \(y+i-1),\(x-1)")
+		// 				area[y+i-1][x-1] = Board.US //Turns UE into US
+		// 			}
+		// 		}
+		// 		else
+		// 		{
+		//
+		// 			for i in 1...Sub.length
+		// 			{
+		// 				print("Y + sublength: \(y+Sub.length)")
+		// 				print("Putting at \(y-i-1),\(x-1)")
+		// 				area[y-i-1][x-1] = Board.US //Turns UE into US
+		// 			}
+		// 		}
+		// 	}
+	//}
 		//Add Carriers
 		// for _ in 1...9
 		// {
@@ -244,10 +279,10 @@ public class Board
 		// 	}
 		// }
 		//Add tugboats
-		for _ in 1...TUGS
-		{
-
-		}
+		// for _ in 1...TUGS
+		// {
+		//
+		// }
 	}
 
 	func add(boat : Boat)
@@ -258,9 +293,11 @@ public class Board
 
 		if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
 			{
-				if x+type(of: boat).length < XAXIS-1 //Check to see if it'll even fit first. This will cause boats to avoid borders, unfortunately
+				//Check to see if it'll even fit first. This will cause boats to avoid
+				//borders, unfortunately
+				if x+type(of: boat).length < XAXIS-1
 				{
-					
+
 					for i in 1...type(of: boat).length
 					{
 						//For Debug
@@ -271,7 +308,7 @@ public class Board
 				}
 				else
 				{
-					
+
 					for i in 1...type(of: boat).length
 					{
 						// print("X + sublength: \(x+type(of: boat).length)")
@@ -284,7 +321,7 @@ public class Board
 			{
 				if y+type(of: boat).length < YAXIS-1
 				{
-					
+
 					for i in 1...type(of: boat).length
 					{
 						// print("Y + sublength: \(y+type(of: boat).length)")
@@ -294,7 +331,7 @@ public class Board
 				}
 				else
 				{
-					
+
 					for i in 1...type(of: boat).length
 					{
 						// print("Y + sublength: \(y+type(of: boat).length)")

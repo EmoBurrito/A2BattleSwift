@@ -124,8 +124,8 @@ public class Board
 					{
 						case FE: rowText += " "
 						case FS: rowText += Sub.symbol
-						case FC: rowText += "?"
-						case FT: rowText += "?"
+						case FC: rowText += Carrier.symbol
+						case FT: rowText += Tug.symbol
 						default: rowText += "?" //Should never happen
 					}
 				}
@@ -184,105 +184,10 @@ public class Board
 		display()
 	}
 
-	//TODO Make this part of an initializer
+	//TODO Make this part of the initializer
 	func populate()
 	{
-		//Create a sub
-		//var mySub = Sub()
-
-		//Pick a spot on the board.
-		//TODO: Check if already occupied
 		fill_harbor()
-		//Add subs
-		// for _ in 1...9
-		// {
-		// 	//TODO make a function pointer out of all of this
-		// 	//TODO Check if another boat is there
-		// 	let x = random() % XAXIS
-		// 	let y = random() % YAXIS
-		//
-		// 	if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
-		// 	{
-		// 		if x+Sub.length < XAXIS-1 //Check to see if it'll even fit first. This will cause boats to avoid borders, unfortunately
-		// 		{
-		//
-		// 			for i in 1...Sub.length
-		// 			{
-		// 				print("X + sublength: \(x+Sub.length)")
-		// 				print("Putting at \(y-1),\(x+i-1)")
-		// 				area[y-1][x+i-1] = Board.US //Turns UE into US
-		// 			}
-		// 		}
-		// 		else
-		// 		{
-		//
-		// 			for i in 1...Sub.length
-		// 			{
-		// 				print("X + sublength: \(x+Sub.length)")
-		// 				print("Putting at \(y-1),\(x-i-1)")
-		// 				area[y-1][x-i-1] = Board.US //Turns UE into US
-		// 			}
-		// 		}
-		// 	}
-		// 	else
-		// 	{
-		// 		if y+Sub.length < YAXIS-1 //Check to see if it'll even fit first. This will cause boats to avoid borders, unfortunately
-		// 		{
-		//
-		// 			for i in 1...Sub.length
-		// 			{
-		// 				print("Y + sublength: \(y+Sub.length)")
-		// 				print("Putting at \(y+i-1),\(x-1)")
-		// 				area[y+i-1][x-1] = Board.US //Turns UE into US
-		// 			}
-		// 		}
-		// 		else
-		// 		{
-		//
-		// 			for i in 1...Sub.length
-		// 			{
-		// 				print("Y + sublength: \(y+Sub.length)")
-		// 				print("Putting at \(y-i-1),\(x-1)")
-		// 				area[y-i-1][x-1] = Board.US //Turns UE into US
-		// 			}
-		// 		}
-		// 	}
-	//}
-		//Add Carriers
-		// for _ in 1...9
-		// {
-		// 	let x = random() % XAXIS
-		// 	let y = random() % YAXIS
-
-		// 	do //Attempt to put the boat anywhere, but may out of bounds
-		// 	{
-		// 		if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
-		// 		{
-		// 			for i in 1...Sub.length
-		// 			{
-		// 				area[y-1][x+i-1] = Board.US //Turns UE into US
-		// 				print("Putting at \(y-1),\(x+i-1)")
-		// 			}
-		// 		}
-		// 		else
-		// 		{
-		// 			for i in 1...Sub.length
-		// 			{
-		// 				area[y+i-1][x-1] = Board.US
-		// 				print("Putting at \(y-1),\(x+i-1)")
-		// 			}
-		// 		}
-		// 	}
-		// 	catch
-		// 	{
-
-		// 	}
-		// }
-		//Add tugboats
-		// for _ in 1...TUGS
-		// {
-		//
-		// }
 	}
 
 	func add(boat : Boat)
@@ -290,7 +195,18 @@ public class Board
 		//Pick random starting point
 		let x = random() % XAXIS
 		let y = random() % YAXIS
-
+		// let sym = {
+		// 	switch type(of:boat){
+		// 	case is Sub: Sub.symbol;
+		// 		break;
+		// 	case is Carrier: Carrier.symbol;
+		// 		break;
+		// 	case is Tug: Tug.symbol;
+		// 		break;
+		// 	default : ":)";
+		// 		break;
+		// 	}
+		// }
 		if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
 			{
 				//Check to see if it'll even fit first. This will cause boats to avoid

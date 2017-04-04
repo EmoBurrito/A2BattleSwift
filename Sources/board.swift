@@ -122,19 +122,11 @@ public class Board
 				{
 					switch area[i][j]
 					{
-<<<<<<< HEAD
-						case FE: rowText += " "
-						case FS: rowText += Sub.symbol
-						case FC: rowText += Carrier.symbol
-						case FT: rowText += Tug.symbol
-						default: rowText += "?" //Should never happen
-=======
 						case FE: rowText += "  "
 						case FS: rowText += " " + Sub.symbol
 						case FC: rowText += " " + Carrier.symbol
 						case FT: rowText += " " + Tug.symbol
 						default: rowText += " ?" //Should never happen
->>>>>>> master
 					}
 				}
 			}

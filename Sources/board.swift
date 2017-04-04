@@ -45,10 +45,11 @@ public class Board
 	//Generate boats and add them to the board
 	func fill_harbor()
 	{
+		srand( UInt32( time( nil ) ) )
 		//Make five boats!
 		for _ in 0...4
 		{
-			srand( UInt32( time( nil ) ) )
+
 			let rand = Int(random() % 3 + 1) //random number between 1 and 3
 			switch rand
 			{//based on the random we generated, add to our boat counters
@@ -58,6 +59,7 @@ public class Board
 				default: break //should never hit this case
 			}
 		}
+		print("There are \(SUBS) subs, \(CARRIERS) carriers, and \(TUGS) tugboats in this game.")
 		//now, let's instantiate those boats!
 		build_boats(subs:SUBS, cars:CARRIERS, tugs:TUGS)
 	}
@@ -101,7 +103,7 @@ public class Board
 		var headerRow = " "
 		for i in 0...XAXIS
 		{
-			headerRow += " " + String(i)
+			headerRow += String(i)
 		}
 		print (headerRow)
 
@@ -115,26 +117,18 @@ public class Board
 				//If area has not been fired at, display fog of war
 				if area[i][j] < 20
 				{
-					rowText += " 🌊" //space, then Wave character
+					rowText += "*"
 				}
 				//Else, display what is there.
 				else
 				{
 					switch area[i][j]
 					{
-<<<<<<< HEAD
 						case FE: rowText += " "
 						case FS: rowText += Sub.symbol
 						case FC: rowText += Carrier.symbol
 						case FT: rowText += Tug.symbol
 						default: rowText += "?" //Should never happen
-=======
-						case FE: rowText += "  "
-						case FS: rowText += " " + Sub.symbol
-						case FC: rowText += " " + Carrier.symbol
-						case FT: rowText += " " + Tug.symbol
-						default: rowText += " ?" //Should never happen
->>>>>>> master
 					}
 				}
 			}
@@ -203,18 +197,6 @@ public class Board
 		//Pick random starting point
 		let x = random() % XAXIS
 		let y = random() % YAXIS
-		// let sym = {
-		// 	switch type(of:boat){
-		// 	case is Sub: Sub.symbol;
-		// 		break;
-		// 	case is Carrier: Carrier.symbol;
-		// 		break;
-		// 	case is Tug: Tug.symbol;
-		// 		break;
-		// 	default : ":)";
-		// 		break;
-		// 	}
-		// }
 		if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
 			{
 				//Check to see if it'll even fit first. This will cause boats to avoid
@@ -227,7 +209,7 @@ public class Board
 						//For Debug
 						// print("X + sublength: \(x+type(of: boat).length)")
 						// print("Putting at \(y-1),\(x+i-1)")
-						area[y-1][x+i-1] = Board.US //Turns UE into US, UC, UT, etc.
+						area[y-1][x+i-1] = type(of: boat).num //Turns UE into US, UC, UT, etc.
 					}
 				}
 				else
@@ -237,7 +219,7 @@ public class Board
 					{
 						// print("X + sublength: \(x+type(of: boat).length)")
 						// print("Putting at \(y-1),\(x-i-1)")
-						area[y-1][x-i-1] = Board.US
+						area[y-1][x-i-1] = type(of: boat).num
 					}
 				}
 			}
@@ -250,7 +232,7 @@ public class Board
 					{
 						// print("Y + sublength: \(y+type(of: boat).length)")
 						// print("Putting at \(y+i-1),\(x-1)")
-						area[y+i-1][x-1] = Board.US
+						area[y+i-1][x-1] = type(of: boat).num
 					}
 				}
 				else
@@ -260,7 +242,7 @@ public class Board
 					{
 						// print("Y + sublength: \(y+type(of: boat).length)")
 						// print("Putting at \(y-i-1),\(x-1)")
-						area[y-i-1][x-1] = Board.US
+						area[y-i-1][x-1] = type(of: boat).num
 					}
 				}
 			}

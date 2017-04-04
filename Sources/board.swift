@@ -103,7 +103,7 @@ public class Board
 		var headerRow = " "
 		for i in 0...XAXIS
 		{
-			headerRow += String(i)
+			headerRow += " " + String(i)
 		}
 		print (headerRow)
 
@@ -117,18 +117,18 @@ public class Board
 				//If area has not been fired at, display fog of war
 				if area[i][j] < 20
 				{
-					rowText += "*"
+					rowText += " *"
 				}
 				//Else, display what is there.
 				else
 				{
 					switch area[i][j]
 					{
-						case FE: rowText += " "
-						case FS: rowText += Sub.symbol
-						case FC: rowText += Carrier.symbol
-						case FT: rowText += Tug.symbol
-						default: rowText += "?" //Should never happen
+						case FE: rowText += "  "
+						case FS: rowText += " " + Sub.symbol
+						case FC: rowText += " " + Carrier.symbol
+						case FT: rowText += " " + Tug.symbol
+						default: rowText += " ?" //Should never happen
 					}
 				}
 			}
@@ -197,29 +197,27 @@ public class Board
 		//Pick random starting point
 		let x = random() % XAXIS
 		let y = random() % YAXIS
+		// print(y, x) //For debug
 		if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
 			{
 				//Check to see if it'll even fit first. This will cause boats to avoid
 				//borders, unfortunately
 				if x+type(of: boat).length < XAXIS-1
 				{
-
-					for i in 1...type(of: boat).length
+					for i in 0...type(of: boat).length
 					{
 						//For Debug
-						// print("X + sublength: \(x+type(of: boat).length)")
 						// print("Putting at \(y-1),\(x+i-1)")
-						area[y-1][x+i-1] = type(of: boat).num //Turns UE into US, UC, UT, etc.
+						area[y][x+i] = type(of: boat).num //Turns UE into US, UC, UT, etc.
 					}
 				}
 				else
 				{
 
-					for i in 1...type(of: boat).length
+					for i in 0...type(of: boat).length
 					{
-						// print("X + sublength: \(x+type(of: boat).length)")
 						// print("Putting at \(y-1),\(x-i-1)")
-						area[y-1][x-i-1] = type(of: boat).num
+						area[y][x-i] = type(of: boat).num
 					}
 				}
 			}
@@ -227,22 +225,19 @@ public class Board
 			{
 				if y+type(of: boat).length < YAXIS-1
 				{
-
-					for i in 1...type(of: boat).length
+					for i in 0...type(of: boat).length
 					{
-						// print("Y + sublength: \(y+type(of: boat).length)")
 						// print("Putting at \(y+i-1),\(x-1)")
-						area[y+i-1][x-1] = type(of: boat).num
+						area[y+i][x] = type(of: boat).num
 					}
 				}
 				else
 				{
 
-					for i in 1...type(of: boat).length
+					for i in 0...type(of: boat).length
 					{
-						// print("Y + sublength: \(y+type(of: boat).length)")
 						// print("Putting at \(y-i-1),\(x-1)")
-						area[y-i-1][x-1] = type(of: boat).num
+						area[y-i][x] = type(of: boat).num
 					}
 				}
 			}

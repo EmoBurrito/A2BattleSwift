@@ -195,18 +195,8 @@ public class Board
 		//Pick random starting point
 		let x = random() % XAXIS
 		let y = random() % YAXIS
-		// let sym = {
-		// 	switch type(of:boat){
-		// 	case is Sub: Sub.symbol;
-		// 		break;
-		// 	case is Carrier: Carrier.symbol;
-		// 		break;
-		// 	case is Tug: Tug.symbol;
-		// 		break;
-		// 	default : ":)";
-		// 		break;
-		// 	}
-		// }
+		print(y, x)
+
 		if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
 			{
 				//Check to see if it'll even fit first. This will cause boats to avoid
@@ -214,22 +204,22 @@ public class Board
 				if x+type(of: boat).length < XAXIS-1
 				{
 
-					for i in 1...type(of: boat).length
+					for i in 0...type(of: boat).length
 					{
 						//For Debug
-						// print("X + sublength: \(x+type(of: boat).length)")
-						// print("Putting at \(y-1),\(x+i-1)")
-						area[y-1][x+i-1] = Board.US //Turns UE into US, UC, UT, etc.
+						print("X + sublength: \(x+type(of: boat).length)")
+						print("Putting at \(y),\(x+i)")
+						area[y][x+i] = Board.US //Turns UE into US, UC, UT, etc.
 					}
 				}
 				else
 				{
 
-					for i in 1...type(of: boat).length
+					for i in 0...type(of: boat).length
 					{
-						// print("X + sublength: \(x+type(of: boat).length)")
-						// print("Putting at \(y-1),\(x-i-1)")
-						area[y-1][x-i-1] = Board.US
+						print("X + sublength: \(x-type(of: boat).length)")
+						print("Putting at \(y),\(x-i)")
+						area[y][x-i] = Board.US
 					}
 				}
 			}
@@ -238,21 +228,21 @@ public class Board
 				if y+type(of: boat).length < YAXIS-1
 				{
 
-					for i in 1...type(of: boat).length
+					for i in 0...type(of: boat).length
 					{
-						// print("Y + sublength: \(y+type(of: boat).length)")
-						// print("Putting at \(y+i-1),\(x-1)")
-						area[y+i-1][x-1] = Board.US
+						print("Y + sublength: \(y+type(of: boat).length)")
+						print("Putting at \(y+i),\(x)")
+						area[y+i][x] = Board.US
 					}
 				}
 				else
 				{
 
-					for i in 1...type(of: boat).length
+					for i in 0...type(of: boat).length
 					{
-						// print("Y + sublength: \(y+type(of: boat).length)")
-						// print("Putting at \(y-i-1),\(x-1)")
-						area[y-i-1][x-1] = Board.US
+						print("Y + sublength: \(y-type(of: boat).length)")
+						print("Putting at \(y-i),\(x)")
+						area[y-i][x] = Board.US
 					}
 				}
 			}

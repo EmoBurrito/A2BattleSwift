@@ -101,7 +101,7 @@ public class Board
 		var headerRow = " "
 		for i in 0...XAXIS
 		{
-			headerRow += String(i)
+			headerRow += " " + String(i)
 		}
 		print (headerRow)
 
@@ -115,18 +115,26 @@ public class Board
 				//If area has not been fired at, display fog of war
 				if area[i][j] < 20
 				{
-					rowText += "*"
+					rowText += " 🌊" //space, then Wave character
 				}
 				//Else, display what is there.
 				else
 				{
 					switch area[i][j]
 					{
+<<<<<<< HEAD
 						case FE: rowText += " "
 						case FS: rowText += Sub.symbol
 						case FC: rowText += Carrier.symbol
 						case FT: rowText += Tug.symbol
 						default: rowText += "?" //Should never happen
+=======
+						case FE: rowText += "  "
+						case FS: rowText += " " + Sub.symbol
+						case FC: rowText += " " + Carrier.symbol
+						case FT: rowText += " " + Tug.symbol
+						default: rowText += " ?" //Should never happen
+>>>>>>> master
 					}
 				}
 			}
@@ -256,5 +264,10 @@ public class Board
 					}
 				}
 			}
+	}
+
+	func victoryCheck() -> Bool
+	{
+		return false
 	}
 }

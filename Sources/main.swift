@@ -8,7 +8,7 @@ myBoard.display()
 var victory = false
 var playGame = true
 
-myBoard.populate()
+myBoard.fill_harbor()
 //var mySub = Sub()
 //myBoard.add(boat : mySub)
 

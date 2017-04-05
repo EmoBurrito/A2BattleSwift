@@ -42,7 +42,11 @@ public class Board
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE]
 ]
 
-	//Generate boats and add them to the board
+	/**
+	 * Generate boats and add them to the board.
+	 * I mean it's not really a harbour. We're at war here, Stephanie!
+	 * Besides, we're a commonwealth, spell it right
+	 */
 	func fill_harbor()
 	{
 		srand( UInt32( time( nil ) ) )
@@ -140,20 +144,28 @@ public class Board
 	func prompt()
 	{
 		//Get input
-		print("Choose a letter:")
+		print("Choose a letter ('?' for help):")
 		var letterTarget : String = String(readLine()!)!
 		//Parses the input for only the first character, then casts to uppercase
 		letterTarget = String(letterTarget[letterTarget.index(letterTarget.startIndex, offsetBy: 0)]).uppercased()
 
-		print("Choose a number:")
+		print("Choose a number ('?' for help):")
 		let numberTarget : Int = Int(readLine()!)!
 
 		//TODO Check if input is valid
-		if true
+		if letterTarget == "?"	//display helpful things.
 		{
-			//Shoot
+			print("There are \(SUBS) subs, \(CARRIERS) carriers, and \(TUGS) tugboats in this game.\n")
+		}
+		else
+		{
 			shoot(letter : letterTarget, number : numberTarget)
 		}
+		// if true
+		// {
+		// 	//Shoot
+		// 	shoot(letter : letterTarget, number : numberTarget)
+		// }
 	}
 
 	//Shoot at target
@@ -186,24 +198,28 @@ public class Board
 		display()
 	}
 
-	//TODO Make this part of the initializer
-	func populate()
-	{
-		fill_harbor()
-	}
-
 	func add(boat : Boat)
 	{
 		//Pick random starting point
-		let x = random() % XAXIS
-		let y = random() % YAXIS
+		var x = random() % XAXIS
+		var y = random() % YAXIS
+		var orientation = random() % 2
 		// print(y, x) //For debug
-		if random() % 2 == 0 //Randomly pick if will be horizontal or vertical
+
+		//First check to see if these variables will cause a collision. If so, reroll randoms
+		while detectCollision(boat : boat, coords : (x,y), orientation : orientation)
+		{
+			x = random() % XAXIS
+			y = random() % YAXIS
+			orientation = random() % 2
+		}
+
+		if orientation == 0 //Randomly pick if will be horizontal or vertical
+		{
+			//Check to see if it'll even fit first. This will cause boats to avoid
+			//borders, unfortunately
+			if x+type(of: boat).length < XAXIS //TODO -1 may not be necessary
 			{
-				//Check to see if it'll even fit first. This will cause boats to avoid
-				//borders, unfortunately
-				if x+type(of: boat).length < XAXIS-1
-				{
 					for i in 1...type(of: boat).length
 					{
 						//For Debug
@@ -211,41 +227,102 @@ public class Board
 						area[y][x+i] = type(of: boat).num //Turns UE into US, UC, UT, etc.
 						//type(of:boat).hits.append(((x:x, y:y), flag:false))
 					}
-				}
-				else
-				{
 
-					for i in 1...type(of: boat).length
-					{
-						// print("Putting at \(y-1),\(x-i-1)")
-						area[y][x-i] = type(of: boat).num
-					}
-				}
 			}
 			else
 			{
-				if y+type(of: boat).length < YAXIS-1
-				{
 					for i in 1...type(of: boat).length
 					{
 						// print("Putting at \(y+i-1),\(x-1)")
 						area[y+i][x] = type(of: boat).num
 					}
-				}
-				else
+// =======
+// 					// print("Putting at \(y-1),\(x-i-1)")
+// 					area[y][x-i] = type(of: boat).num
+// >>>>>>> master
+// 				}
+			}
+		}
+		else
+		{
+			if y+type(of: boat).length < YAXIS
+			{
+				for i in 1...type(of: boat).length
 				{
-
-					for i in 1...type(of: boat).length
-					{
-						// print("Putting at \(y-i-1),\(x-1)")
-						area[y-i][x] = type(of: boat).num
-					}
+					// print("Putting at \(y+i-1),\(x-1)")
+					area[y+i][x] = type(of: boat).num
 				}
 			}
+			else
+			{
+				for i in 1...type(of: boat).length
+				{
+					// print("Putting at \(y-i-1),\(x-1)")
+					area[y-i][x] = type(of: boat).num
+				}
+			}
+		}
 	}
 
+	/**
+	 * Checks to see if all the ships have been destroyed
+	 * @return Bool Whether the player has won yet
+	 */
 	func victoryCheck() -> Bool
 	{
 		return false
+	}
+
+	/**
+	 * Checks to see if the boat can actually occupy where it wants to
+	 * @param boat The boat we want to place
+	 * @param coords A tuple of x,y representing where the boat wants to start
+	 * @param orientation Either 0 or 1. If 0, increment x. If odd, increment y
+	 */
+	func detectCollision(boat : Boat, coords : (Int, Int), orientation : Int) -> Bool
+	{
+		var collision = false
+
+		print(collision)
+
+		if orientation == 0 //Horizontal
+		{
+			//Check if boat will fit in array
+			if coords.0+type(of: boat).length < XAXIS //TODO -1 may not be necessary
+			{
+				for i in 0...type(of: boat).length
+				{
+					//Check for occupancy
+					if area[coords.1][coords.0+i] != Board.UE{collision=true}
+				}
+			}
+			else
+			{
+				for i in 0...type(of: boat).length
+				{
+					if area[coords.1][coords.0-i] != Board.UE{collision=true}
+				}
+			}
+		}
+		else
+		{
+			if coords.1+type(of: boat).length < YAXIS
+			{
+				for i in 0...type(of: boat).length
+				{
+					if area[coords.1+i][coords.0] != Board.UE{collision=true}
+				}
+			}
+			else
+			{
+
+				for i in 0...type(of: boat).length
+				{
+					if area[coords.1-i][coords.0] != Board.UE{collision=true}
+				}
+			}
+		}
+
+		return collision
 	}
 }

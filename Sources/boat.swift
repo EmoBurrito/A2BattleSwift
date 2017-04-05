@@ -5,7 +5,17 @@ public class Boat
 	class var length: Int {return 0}
 	class var name: String {return "noone"}
 	class var num: Int {return 10} //we convert this to the symbol later!
-
+	public var description: String //The equivilent of a toString
+		{
+			var toReturn = ""
+			toReturn += type(of: self).name + " | Hits:"
+			//Iterate through hits and append them
+			for hit in self.hits
+			{
+				toReturn += String(hit.2) + ", "
+			}
+			return toReturn
+		}
 	var hits:[(Int, Int, Bool)]
 
 	public init ()
@@ -63,7 +73,6 @@ public class Boat
 				toReturn = false
 			}
 		}
-
 		return toReturn
 	}
 }

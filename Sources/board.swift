@@ -1,12 +1,7 @@
 import Foundation
 //Override of Array.contains found here:
 //http://stackoverflow.com/questions/24102024/how-to-check-if-an-element-is-in-an-array
-@available(iOS, deprecated:11.0)
-extension Array {
-    func contains<T where T : Equatable>(obj: T) -> Bool{
-        return self.filter({$0 as? T == obj}).count > 0
-    }
-}
+// @s
 /// A board to play on. Contains ships for the players to shoot at.
 public class Board
 {
@@ -73,24 +68,56 @@ public class Board
 		}
 		//now, let's instantiate those boats!
 		//build_boats(subs:SUBS, cars:CARRIERS, tugs:TUGS)
-		build(type:Sub(), num:SUBS)
-		build(type:Carrier(), num:CARRIERS)
-		build(type:Tug(), num:TUGS)
+
+    //Ideal, but breaking
+		// build(toClone:Sub(), num:SUBS)
+		// build(toClone:Carrier(), num:CARRIERS)
+		// build(toClone:Tug(), num:TUGS)
+
+    //Confirmed working, but large
+    build_boats(sub:SUBS, car:CARRIERS, tug:TUGS)
 	}
 	/*
+		This method is not actually used, but ideally would replace build_boats
+	*/
+	// func build(toClone:Boat, num:Int)
+	// {
+	// 	if num > 0
+	// 	{
+	// 		for _ in 1...num
+	// 		{
+	// 			add(boat:type(of: toClone)()) //instantiate a new boat of the same type
+	// 		}
+	// 	}
+	// }
+
+  /*
 		Once we've made our random boats, instantiate them and fill the harbour
 	*/
-	func build(type:Boat, num:Int)
-	{
-		if num > 0
+  func build_boats(sub:Int, car:Int, tug:Int)
+  {
+    if sub > 0
 		{
-			for _ in 1...num
+			for _ in 1...sub
 			{
-				let b = type
-				add(boat:b)
+				add(boat:Sub()) //Add X boats based on what boat was passed in
 			}
 		}
-	}
+    if car > 0
+		{
+			for _ in 1...car
+			{
+				add(boat:Carrier()) //Add X boats based on what boat was passed in
+			}
+		}
+    if tug > 0
+		{
+			for _ in 1...tug
+			{
+				add(boat:Tug()) //Add X boats based on what boat was passed in
+			}
+		}
+  }
 
 	/**
 	Prints the board out to the terminal.
@@ -142,7 +169,6 @@ public class Board
 		let letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "!", "?"]
 		let numbers = [0,1,2,3,4,5,6,7,8,9]
 		var letterTarget:String
-		var numberTarget:Int
 		//Get input
 		print("Choose a letter ('?' for help):")
 		//Make sure we can assign the input to a string, else display error
@@ -175,12 +201,11 @@ public class Board
 						//letterTarget is valid, so prompt for a number selection
 						print("Choose a number:")
 						//Ensure we can parse to an Int, else display error
-						if let numberIn : Int = Int(readLine()!)
+						if let numberTarget : Int = Int(readLine()!)
 						{
 							//Only allow numbers 0-9, nothing else.
-							if numbers.contains(numberIn)
+							if numbers.contains(numberTarget)
 							{
-								numberTarget = numberIn
 								//If valid, use the coordinates to shoot at target.
 								shoot(letter : letterTarget, number : numberTarget)
 							}
@@ -274,7 +299,7 @@ public class Board
 			orientation = random() % 2
 		}
 
-		if orientation == 0 //Randomly pick if will be horizontal or vertical
+		if orientation == 0 //Horizonal
 		{
 			//Check to see if it'll even fit first. This will cause boats to avoid borders, unfortunately
 			if x+type(of: boat).length < XAXIS
@@ -294,7 +319,7 @@ public class Board
 				}
 			}
 		}
-		else
+		else //Vertical
 		{
 			if y+type(of: boat).length < YAXIS
 			{

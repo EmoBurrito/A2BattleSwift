@@ -72,7 +72,6 @@ public class Board
 				default: break //should never hit this case
 			}
 		}
-		print("There are \(SUBS) subs, \(CARRIERS) carriers, and \(TUGS) tugboats in this game.")
 		//now, let's instantiate those boats!
 		build_boats(subs:SUBS, cars:CARRIERS, tugs:TUGS)
 	}
@@ -153,21 +152,70 @@ public class Board
 	//Used to prompt the player where they want to shoot
 	func prompt()
 	{
+		var letterTarget:String
 		//Get input
-		print("Choose a letter:")
-		var letterTarget : String = String(readLine()!)!
-		//Parses the input for only the first character, then casts to uppercase
-		letterTarget = String(letterTarget[letterTarget.index(letterTarget.startIndex, offsetBy: 0)]).uppercased()
-
-		print("Choose a number:")
-		let numberTarget : Int = Int(readLine()!)!
-
-		//TODO Check if input is valid
-		if true
+		print("Choose a letter ('?' for help):")
+		//Make sure we can assign the input to a string, else display error
+		if let letterIn = String(readLine()!)
 		{
-			//Shoot
-			shoot(letter : letterTarget, number : numberTarget)
+			//Parses the input for only the first character, then casts to uppercase
+			letterTarget = String(letterIn[letterIn.index(
+			letterIn.startIndex, offsetBy: 0)]).uppercased()
+			//Now that it's been uppercased, ensure it's a valid entry
+			//if small, check for ?
+			if letterTarget < "A"
+			{
+				if letterTarget == "?"
+				{
+					showHelp()
+				}
+				else
+				{
+					print("Your selection was invalid. Please try again.\n\n")
+				}
+			}
+			else if letterTarget > "J"
+			{
+				if letterTarget == "Z"
+				{
+					//
+				}
+				else
+				{
+					print("Your selection was invalid. Please try again.\n\n")
+				}
+			}
+			else
+			{
+				print("Choose a number:")
+				if let numberTarget : Int = Int(readLine()!)
+				{
+					shoot(letter : letterTarget, number : numberTarget)
+				}
+				else
+				{
+					print("Your selection was invalid. Please try again.\n\n")
+				}
+			}
 		}
+		else
+		{
+			print("Your selection was invalid. Please try again.\n\n")
+		}
+		//Parses the input for only the first character, then casts to uppercase
+
+		// if letterTarget == "?" 	//display helpful things.
+		// {
+		// 	showHelp()
+		// }
+
+	}
+
+	func showHelp()
+	{
+		print("There are \(SUBS) subs, \(CARRIERS) carriers, and \(TUGS) tugboats in this game.\n")
+		display()
+		prompt()
 	}
 
 	//Shoot at target
@@ -200,7 +248,6 @@ public class Board
 				checkTargets(x : number, y : yAxis)
 			}
 		}
-
 		//Display the updated board
 		display()
 	}
@@ -228,7 +275,7 @@ public class Board
 				for i in 1...type(of: boat).length
 				{
 					area[y][x+i] = type(of: boat).num //Turns UE into US, UC, UT, etc.
-					boat.append(x : x+i, y : y) //Append the potential target to the boat's possible hits array
+					boat.append(x : x+i, y : y) //Append the potential target to the boat's possible hits array.
 				}
 			}
 			else
@@ -294,7 +341,7 @@ public class Board
 	func detectCollision(boat : Boat, coords : (Int, Int), orientation : Int) -> Bool
 	{
 		var collision = false
-
+		
 		if orientation == 0 //Horizontal
 		{
 			//Check if boat will fit in array
@@ -332,7 +379,6 @@ public class Board
 				}
 			}
 		}
-
 		return collision
 	}
 

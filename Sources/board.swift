@@ -68,25 +68,25 @@ public class Board
 	*/
 	func build_boats(subs:Int, cars:Int, tugs:Int)
 	{
-		if subs != 0
+		if subs > 0
 		{
-			for _ in 0...subs
+			for _ in 1...subs
 			{
 				let s = Sub()
 				add(boat:s)
 			}
 		}
-		if cars != 0
+		if cars > 0
 		{
-			for _ in 0...cars
+			for _ in 1...cars
 			{
 				let c = Carrier()
 				add(boat:c)
 			}
 		}
-		if tugs != 0
+		if tugs > 0
 		{
-			for _ in 0...tugs
+			for _ in 1...tugs
 			{
 				let t = Tug()
 				add(boat:t)
@@ -204,17 +204,18 @@ public class Board
 				//borders, unfortunately
 				if x+type(of: boat).length < XAXIS-1
 				{
-					for i in 0...type(of: boat).length
+					for i in 1...type(of: boat).length
 					{
 						//For Debug
 						// print("Putting at \(y-1),\(x+i-1)")
 						area[y][x+i] = type(of: boat).num //Turns UE into US, UC, UT, etc.
+						//type(of:boat).hits.append(((x:x, y:y), flag:false))
 					}
 				}
 				else
 				{
 
-					for i in 0...type(of: boat).length
+					for i in 1...type(of: boat).length
 					{
 						// print("Putting at \(y-1),\(x-i-1)")
 						area[y][x-i] = type(of: boat).num
@@ -225,7 +226,7 @@ public class Board
 			{
 				if y+type(of: boat).length < YAXIS-1
 				{
-					for i in 0...type(of: boat).length
+					for i in 1...type(of: boat).length
 					{
 						// print("Putting at \(y+i-1),\(x-1)")
 						area[y+i][x] = type(of: boat).num
@@ -234,7 +235,7 @@ public class Board
 				else
 				{
 
-					for i in 0...type(of: boat).length
+					for i in 1...type(of: boat).length
 					{
 						// print("Putting at \(y-i-1),\(x-1)")
 						area[y-i][x] = type(of: boat).num

@@ -41,6 +41,15 @@ public class Board
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE],
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE]
 ]
+	// var area = []
+
+	// for i in 1...YAXIS
+	// {
+	// 	self.area.append([UE, UE, UE, UE, UE, UE, UE, UE, UE, UE])
+	// }
+
+	//An array to hold boats that we can shoot at
+	var targets = [Boat]()
 
 	/**
 	 * Generate boats and add them to the board.
@@ -69,28 +78,29 @@ public class Board
 	}
 	/*
 		Once we've made our random boats, instantiate them and fill the harbor
+		//TODO knock this down to one method called three times
 	*/
 	func build_boats(subs:Int, cars:Int, tugs:Int)
 	{
-		if subs != 0
+		if subs > 0
 		{
-			for _ in 0...subs
+			for _ in 1...subs
 			{
 				let s = Sub()
 				add(boat:s)
 			}
 		}
-		if cars != 0
+		if cars > 0
 		{
-			for _ in 0...cars
+			for _ in 1...cars
 			{
 				let c = Carrier()
 				add(boat:c)
 			}
 		}
-		if tugs != 0
+		if tugs > 0
 		{
-			for _ in 0...tugs
+			for _ in 1...tugs
 			{
 				let t = Tug()
 				add(boat:t)
@@ -170,7 +180,10 @@ public class Board
 			{
 				for j in 0...XAXIS
 				{
-					area[i][j] += FIRE_DIFFERENCE;
+					if area[i][j] < FE
+					{
+						area[i][j] += FIRE_DIFFERENCE;
+					}
 				}
 			}
 		}
@@ -183,7 +196,10 @@ public class Board
 			//For debug
 			print("Shooting at [\(number)][\(yAxis)]")
 
-			area[yAxis][number] += FIRE_DIFFERENCE;
+			if area[yAxis][number] < FE
+			{
+				area[yAxis][number] += FIRE_DIFFERENCE;
+			}
 		}
 
 		//Display the updated board
@@ -212,7 +228,7 @@ public class Board
 			//borders, unfortunately
 			if x+type(of: boat).length < XAXIS //TODO -1 may not be necessary
 			{
-				for i in 0...type(of: boat).length
+				for i in 1...type(of: boat).length
 				{
 					//For Debug
 					// print("Putting at \(y-1),\(x+i-1)")
@@ -221,8 +237,7 @@ public class Board
 			}
 			else
 			{
-
-				for i in 0...type(of: boat).length
+				for i in 1...type(of: boat).length
 				{
 					// print("Putting at \(y-1),\(x-i-1)")
 					area[y][x-i] = type(of: boat).num
@@ -233,7 +248,7 @@ public class Board
 		{
 			if y+type(of: boat).length < YAXIS
 			{
-				for i in 0...type(of: boat).length
+				for i in 1...type(of: boat).length
 				{
 					// print("Putting at \(y+i-1),\(x-1)")
 					area[y+i][x] = type(of: boat).num
@@ -241,14 +256,16 @@ public class Board
 			}
 			else
 			{
-
-				for i in 0...type(of: boat).length
+				for i in 1...type(of: boat).length
 				{
 					// print("Putting at \(y-i-1),\(x-1)")
 					area[y-i][x] = type(of: boat).num
 				}
 			}
 		}
+
+		//Finally, add this boat to our list of targets
+		self.targets.append(boat)
 	}
 
 	/**
@@ -257,20 +274,34 @@ public class Board
 	 */
 	func victoryCheck() -> Bool
 	{
-		return false
+		var toReturn = true
+
+		//Check all possible targets and make sure they have all been sunk
+		for target in targets
+		{
+			if !target.isSunk()
+			{
+				toReturn = false
+			}
+		}
+
+		//For debug
+		for target in targets{print(target.isSunk())}
+
+		return toReturn
 	}
 
 	/**
 	 * Checks to see if the boat can actually occupy where it wants to
+	 *
 	 * @param boat The boat we want to place
 	 * @param coords A tuple of x,y representing where the boat wants to start
 	 * @param orientation Either 0 or 1. If 0, increment x. If odd, increment y
+	 * @return bool Whether or not a collision was detected
 	 */
 	func detectCollision(boat : Boat, coords : (Int, Int), orientation : Int) -> Bool
 	{
 		var collision = false
-
-		print(collision)
 
 		if orientation == 0 //Horizontal
 		{

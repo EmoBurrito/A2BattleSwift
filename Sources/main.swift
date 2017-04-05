@@ -2,18 +2,14 @@ print("######################################")
 print("# Welcome to Command Line Battleship #")
 print("######################################")
 
-var myBoard = Board()
-myBoard.display()
-
 var victory = false
 var playGame = true
 
-myBoard.fill_harbor()
-//var mySub = Sub()
-//myBoard.add(boat : mySub)
-
 while playGame
 {
+	var myBoard = Board()
+	myBoard.display()
+	myBoard.fill_harbor() //TODO put as part of initializer
 	while !victory
 	{
 		myBoard.prompt()
@@ -22,12 +18,18 @@ while playGame
 		victory = myBoard.victoryCheck()
 	}
 
-	//Ask if they want to play again
-	print("Play again?")
+	print("Play again?") //Ask if they want to play again
 	var answer : String = String(readLine()!)!
 	answer = String(answer[answer.index(answer.startIndex, offsetBy: 0)]).uppercased()
-	if answer != "Y"
+	
+	if answer == "Y"
+	{
+		victory = false
+	}
+	else
 	{
 		playGame = false
 	}
 }
+
+print ("Goodbye!")

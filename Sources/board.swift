@@ -63,7 +63,6 @@ public class Board
 				default: break //should never hit this case
 			}
 		}
-		print("There are \(SUBS) subs, \(CARRIERS) carriers, and \(TUGS) tugboats in this game.")
 		//now, let's instantiate those boats!
 		build_boats(subs:SUBS, cars:CARRIERS, tugs:TUGS)
 	}
@@ -143,29 +142,70 @@ public class Board
 	//Used to prompt the player where they want to shoot
 	func prompt()
 	{
+		var letterTarget:String
 		//Get input
 		print("Choose a letter ('?' for help):")
-		var letterTarget : String = String(readLine()!)!
-		//Parses the input for only the first character, then casts to uppercase
-		letterTarget = String(letterTarget[letterTarget.index(letterTarget.startIndex, offsetBy: 0)]).uppercased()
-
-		print("Choose a number ('?' for help):")
-		let numberTarget : Int = Int(readLine()!)!
-
-		//TODO Check if input is valid
-		if letterTarget == "?"	//display helpful things.
+		//Make sure we can assign the input to a string, else display error
+		if let letterIn = String(readLine()!)
 		{
-			print("There are \(SUBS) subs, \(CARRIERS) carriers, and \(TUGS) tugboats in this game.\n")
+			//Parses the input for only the first character, then casts to uppercase
+			letterTarget = String(letterIn[letterIn.index(
+			letterIn.startIndex, offsetBy: 0)]).uppercased()
+			//Now that it's been uppercased, ensure it's a valid entry
+			//if small, check for ?
+			if letterTarget < "A"
+			{
+				if letterTarget == "?"
+				{
+					showHelp()
+				}
+				else
+				{
+					print("Your selection was invalid. Please try again.\n\n")
+				}
+			}
+			else if letterTarget > "J"
+			{
+				if letterTarget == "Z"
+				{
+					//
+				}
+				else
+				{
+					print("Your selection was invalid. Please try again.\n\n")
+				}
+			}
+			else
+			{
+				print("Choose a number:")
+				if let numberTarget : Int = Int(readLine()!)
+				{
+					shoot(letter : letterTarget, number : numberTarget)
+				}
+				else
+				{
+					print("Your selection was invalid. Please try again.\n\n")
+				}
+			}
 		}
 		else
 		{
-			shoot(letter : letterTarget, number : numberTarget)
+			print("Your selection was invalid. Please try again.\n\n")
 		}
-		// if true
+		//Parses the input for only the first character, then casts to uppercase
+
+		// if letterTarget == "?" 	//display helpful things.
 		// {
-		// 	//Shoot
-		// 	shoot(letter : letterTarget, number : numberTarget)
+		// 	showHelp()
 		// }
+
+	}
+
+	func showHelp()
+	{
+		print("There are \(SUBS) subs, \(CARRIERS) carriers, and \(TUGS) tugboats in this game.\n")
+		display()
+		prompt()
 	}
 
 	//Shoot at target
@@ -193,7 +233,6 @@ public class Board
 
 			area[yAxis][number] += FIRE_DIFFERENCE;
 		}
-
 		//Display the updated board
 		display()
 	}
@@ -220,27 +259,20 @@ public class Board
 			//borders, unfortunately
 			if x+type(of: boat).length < XAXIS //TODO -1 may not be necessary
 			{
-					for i in 1...type(of: boat).length
-					{
-						//For Debug
-						// print("Putting at \(y-1),\(x+i-1)")
-						area[y][x+i] = type(of: boat).num //Turns UE into US, UC, UT, etc.
-						//type(of:boat).hits.append(((x:x, y:y), flag:false))
-					}
-
+				for i in 1...type(of: boat).length
+				{
+					//For Debug
+					// print("Putting at \(y-1),\(x+i-1)")
+					area[y][x+i] = type(of: boat).num //Turns UE into US, UC, UT, etc.
+				}
 			}
 			else
 			{
-					for i in 1...type(of: boat).length
-					{
-						// print("Putting at \(y+i-1),\(x-1)")
-						area[y+i][x] = type(of: boat).num
-					}
-// =======
-// 					// print("Putting at \(y-1),\(x-i-1)")
-// 					area[y][x-i] = type(of: boat).num
-// >>>>>>> master
-// 				}
+				for i in 1...type(of: boat).length
+				{
+					// print("Putting at \(y+i-1),\(x-1)")
+					area[y+i][x] = type(of: boat).num
+				}
 			}
 		}
 		else
@@ -282,9 +314,6 @@ public class Board
 	func detectCollision(boat : Boat, coords : (Int, Int), orientation : Int) -> Bool
 	{
 		var collision = false
-
-		print(collision)
-
 		if orientation == 0 //Horizontal
 		{
 			//Check if boat will fit in array
@@ -322,7 +351,6 @@ public class Board
 				}
 			}
 		}
-
 		return collision
 	}
 }

@@ -180,25 +180,24 @@ public class Board
 			{
 				for j in 0...XAXIS
 				{
-					if area[i][j] < FE
+					if area[i][j] < FE //If location's value is less than "fired", or has not been shot at
 					{
-						area[i][j] += FIRE_DIFFERENCE;
+						area[i][j] += FIRE_DIFFERENCE; //Set the value at location to indicate it's been shot at
+						checkTargets(x : j, y : i) //Change the appropriate ship's "hits" to reflect this
 					}
 				}
 			}
 		}
 		else
 		{
-			//Get the Unicode value of the letter, starting with A=0, B=1, C=2, etc.
 			var yAxis = 0
+			//Get the Unicode value of the letter, starting with A=0, B=1, C=2, etc.
 			for code in String(letter).utf8 { yAxis=(Int(code)-65) }
-
-			//For debug
-			print("Shooting at [\(number)][\(yAxis)]")
 
 			if area[yAxis][number] < FE
 			{
 				area[yAxis][number] += FIRE_DIFFERENCE;
+				checkTargets(x : number, y : yAxis)
 			}
 		}
 
@@ -212,7 +211,6 @@ public class Board
 		var x = random() % XAXIS
 		var y = random() % YAXIS
 		var orientation = random() % 2 
-		// print(y, x) //For debug
 
 		//First check to see if these variables will cause a collision. If so, reroll randoms
 		while detectCollision(boat : boat, coords : (x,y), orientation : orientation)
@@ -224,23 +222,21 @@ public class Board
 
 		if orientation == 0 //Randomly pick if will be horizontal or vertical
 		{
-			//Check to see if it'll even fit first. This will cause boats to avoid
-			//borders, unfortunately
-			if x+type(of: boat).length < XAXIS //TODO -1 may not be necessary
+			//Check to see if it'll even fit first. This will cause boats to avoid borders, unfortunately
+			if x+type(of: boat).length < XAXIS
 			{
 				for i in 1...type(of: boat).length
 				{
-					//For Debug
-					// print("Putting at \(y-1),\(x+i-1)")
 					area[y][x+i] = type(of: boat).num //Turns UE into US, UC, UT, etc.
+					boat.append(x : x+i, y : y) //Append the potential target to the boat's possible hits array
 				}
 			}
 			else
 			{
 				for i in 1...type(of: boat).length
 				{
-					// print("Putting at \(y-1),\(x-i-1)")
 					area[y][x-i] = type(of: boat).num
+					boat.append(x : x-i, y : y)
 				}
 			}
 		}
@@ -250,22 +246,21 @@ public class Board
 			{
 				for i in 1...type(of: boat).length
 				{
-					// print("Putting at \(y+i-1),\(x-1)")
 					area[y+i][x] = type(of: boat).num
+					boat.append(x : x, y : y+i)
 				}
 			}
 			else
 			{
 				for i in 1...type(of: boat).length
 				{
-					// print("Putting at \(y-i-1),\(x-1)")
 					area[y-i][x] = type(of: boat).num
+					boat.append(x : x, y : y-i)
 				}
 			}
 		}
 
-		//Finally, add this boat to our list of targets
-		self.targets.append(boat)
+		self.targets.append(boat) //Finally, add this boat to our list of targets
 	}
 
 	/**
@@ -284,9 +279,6 @@ public class Board
 				toReturn = false
 			}
 		}
-
-		//For debug
-		for target in targets{print(target.isSunk())}
 
 		return toReturn
 	}
@@ -322,7 +314,7 @@ public class Board
 				}
 			}
 		}
-		else
+		else //Vertical
 		{
 			if coords.1+type(of: boat).length < YAXIS
 			{
@@ -342,5 +334,19 @@ public class Board
 		}
 
 		return collision
+	}
+
+	/**
+	 * Iterates through each target and checks to see if they were where where we shot.
+	 *
+	 * @param x Coordinate on the X axis
+ 	 * @param y Coordinate on the Y axis
+	 */
+	func checkTargets(x : Int, y : Int)
+	{
+		for target in targets //Change the appropriate ship's "hits" to reflect this
+		{
+			target.check(x : x, y : y)
+		}
 	}
 }

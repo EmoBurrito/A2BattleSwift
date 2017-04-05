@@ -9,7 +9,7 @@ while playGame
 {
 	var myBoard = Board()
 	myBoard.display()
-	myBoard.fill_harbor() //TODO put as part of initializer
+	myBoard.fill_harbour() //TODO put as part of initializer
 	while !victory
 	{
 		myBoard.prompt()
@@ -21,7 +21,7 @@ while playGame
 	print("Play again?") //Ask if they want to play again
 	var answer : String = String(readLine()!)!
 	answer = String(answer[answer.index(answer.startIndex, offsetBy: 0)]).uppercased()
-	
+
 	if answer == "Y"
 	{
 		victory = false

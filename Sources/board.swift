@@ -1,5 +1,12 @@
 import Foundation
-
+//Override of Array.contains found here:
+//http://stackoverflow.com/questions/24102024/how-to-check-if-an-element-is-in-an-array
+@available(iOS, deprecated:11.0)
+extension Array {
+    func contains<T where T : Equatable>(obj: T) -> Bool{
+        return self.filter({$0 as? T == obj}).count > 0
+    }
+}
 /// A board to play on. Contains ships for the players to shoot at.
 public class Board
 {
@@ -28,7 +35,6 @@ public class Board
 	let FT = 23
 
 	///A two dimensional area containing the board area
-	// TODO: Generate this
 	var area = [
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE],
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE],
@@ -41,23 +47,16 @@ public class Board
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE],
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE]
 ]
-	// var area = []
-
-	// for i in 1...YAXIS
-	// {
-	// 	self.area.append([UE, UE, UE, UE, UE, UE, UE, UE, UE, UE])
-	// }
-
 	//An array to hold boats that we can shoot at
 	var targets = [Boat]()
 
 	/**
 	 * Generate boats and add them to the board.
 	 * I mean it's not really a harbour. We're at war here, Stephanie!
-	 * Besides, we're a commonwealth, spell it right
 	 */
-	func fill_harbor()
+	func fill_harbour()
 	{
+		//Seed the random() function, so random is random.
 		srand( UInt32( time( nil ) ) )
 		//Make five boats!
 		for _ in 0...4
@@ -73,43 +72,29 @@ public class Board
 			}
 		}
 		//now, let's instantiate those boats!
-		build_boats(subs:SUBS, cars:CARRIERS, tugs:TUGS)
+		//build_boats(subs:SUBS, cars:CARRIERS, tugs:TUGS)
+		build(type:Sub(), num:SUBS)
+		build(type:Carrier(), num:CARRIERS)
+		build(type:Tug(), num:TUGS)
 	}
 	/*
-		Once we've made our random boats, instantiate them and fill the harbor
-		//TODO knock this down to one method called three times
+		Once we've made our random boats, instantiate them and fill the harbour
 	*/
-	func build_boats(subs:Int, cars:Int, tugs:Int)
+	func build(type:Boat, num:Int)
 	{
-		if subs > 0
+		if num > 0
 		{
-			for _ in 1...subs
+			for _ in 1...num
 			{
-				let s = Sub()
-				add(boat:s)
-			}
-		}
-		if cars > 0
-		{
-			for _ in 1...cars
-			{
-				let c = Carrier()
-				add(boat:c)
-			}
-		}
-		if tugs > 0
-		{
-			for _ in 1...tugs
-			{
-				let t = Tug()
-				add(boat:t)
+				let b = type
+				add(boat:b)
 			}
 		}
 	}
 
-	 /**
-	 	Prints the board out to the terminal.
-	  */
+	/**
+	Prints the board out to the terminal.
+	*/
 	func display()
 	{
 		//Print the header row
@@ -149,68 +134,83 @@ public class Board
 		}
 	}
 
-	//Used to prompt the player where they want to shoot
+	/*
+	Used to prompt the player where they want to shoot
+	*/
 	func prompt()
 	{
+		let letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "!", "?"]
+		let numbers = [0,1,2,3,4,5,6,7,8,9]
 		var letterTarget:String
+		var numberTarget:Int
 		//Get input
 		print("Choose a letter ('?' for help):")
 		//Make sure we can assign the input to a string, else display error
 		if let letterIn = String(readLine()!)
 		{
-			//Parses the input for only the first character, then casts to uppercase
-			letterTarget = String(letterIn[letterIn.index(
-			letterIn.startIndex, offsetBy: 0)]).uppercased()
-			//Now that it's been uppercased, ensure it's a valid entry
-			//if small, check for ?
-			if letterTarget < "A"
+			//While we're technically handling this by only parsing the first characters
+			//in the string as the entry, we really don't want them to enter words
+			if letterIn.characters.count > 1
 			{
-				if letterTarget == "?"
-				{
-					showHelp()
-				}
-				else
-				{
-					print("Your selection was invalid. Please try again.\n\n")
-				}
-			}
-			else if letterTarget > "J"
-			{
-				if letterTarget == "Z"
-				{
-					//
-				}
-				else
-				{
-					print("Your selection was invalid. Please try again.\n\n")
-				}
+				print("Your selection was invalid: Please enter a single character only.\n\n")
 			}
 			else
 			{
-				print("Choose a number:")
-				if let numberTarget : Int = Int(readLine()!)
+				if letterIn == letters[11]	// check for '?', show help menu
 				{
-					shoot(letter : letterTarget, number : numberTarget)
+					showHelp()
 				}
-				else
+				else if letterIn == letters[10]	//check for '!', cheat code
 				{
-					print("Your selection was invalid. Please try again.\n\n")
+					cheat()
+				}
+				else	//else its a character, and so we'll uppercase it
+				{
+					//Parses the input for only the first character, then casts to uppercase
+					letterTarget = String(letterIn[letterIn.index(
+					letterIn.startIndex, offsetBy: 0)]).uppercased()
+					//Now that it's been uppercased, ensure it's a valid entry
+					if letters.contains(letterTarget)
+					{
+						//letterTarget is valid, so prompt for a number selection
+						print("Choose a number:")
+						//Ensure we can parse to an Int, else display error
+						if let numberIn : Int = Int(readLine()!)
+						{
+							//Only allow numbers 0-9, nothing else.
+							if numbers.contains(numberIn)
+							{
+								numberTarget = numberIn
+								//If valid, use the coordinates to shoot at target.
+								shoot(letter : letterTarget, number : numberTarget)
+							}
+							else	//Helpful error for invalid number selection.
+							{
+								print("Your selection was invalid: must be numbers 0-9.\n\n")
+							}
+						}
+						else	//Helpful error for invalid number selection.
+						{
+							print("Your selection was invalid: must be numbers 0-9.\n\n")
+						}
+					}
+					else	//Helpful error for invalid character selection.
+					{
+						print("Your selection was invalid: must be letters A-J, or '?' for help.\n\n")
+					}
 				}
 			}
 		}
-		else
+		else	//Helpful error for "you entered a string, we don't want strings"
 		{
-			print("Your selection was invalid. Please try again.\n\n")
+			print("Your selection was invalid: Please enter a single character only.\n\n")
 		}
-		//Parses the input for only the first character, then casts to uppercase
-
-		// if letterTarget == "?" 	//display helpful things.
-		// {
-		// 	showHelp()
-		// }
-
 	}
 
+	/*
+	*	Displays for the user how many of each kind of boat, exists in the current
+	* iteration of the game; then re-displays the board and prompts them again.
+	*/
 	func showHelp()
 	{
 		print("There are \(SUBS) subs, \(CARRIERS) carriers, and \(TUGS) tugboats in this game.\n")
@@ -218,35 +218,42 @@ public class Board
 		prompt()
 	}
 
-	//Shoot at target
-	func shoot(letter : String, number : Int)
+	/*
+	* Cheaters never prosper ... so if you cheat, the game ends. Reveals all boat
+	* locations in the game, at the expense of the game ending.
+	*/
+	func cheat()
 	{
-		//Cheat code. Used to nuke entire board.
-		if letter == "Z" && number == 9
+		for i in 0...YAXIS
 		{
-			for i in 0...YAXIS
+			for j in 0...XAXIS
 			{
-				for j in 0...XAXIS
+				if area[i][j] < FE //If location's value is less than "fired", or has not been shot at
 				{
-					if area[i][j] < FE //If location's value is less than "fired", or has not been shot at
-					{
-						area[i][j] += FIRE_DIFFERENCE; //Set the value at location to indicate it's been shot at
-						checkTargets(x : j, y : i) //Change the appropriate ship's "hits" to reflect this
-					}
+					area[i][j] += FIRE_DIFFERENCE; //Set the value at location to indicate it's been shot at
+					checkTargets(x : j, y : i) //Change the appropriate ship's "hits" to reflect this
 				}
 			}
 		}
-		else
-		{
-			var yAxis = 0
-			//Get the Unicode value of the letter, starting with A=0, B=1, C=2, etc.
-			for code in String(letter).utf8 { yAxis=(Int(code)-65) }
+		//Display the updated board
+		display()
+	}
 
-			if area[yAxis][number] < FE
-			{
-				area[yAxis][number] += FIRE_DIFFERENCE;
-				checkTargets(x : number, y : yAxis)
-			}
+	/*
+	* Shoot at target
+	*/
+	func shoot(letter : String, number : Int)
+	{
+		var yAxis = 0
+		//Get the Unicode value of the letter, starting with A=0, B=1, C=2, etc.
+		for code in String(letter).utf8 { yAxis=(Int(code)-65) }
+		//If location's value is less than "fired", or has not been shot at
+		if area[yAxis][number] < FE
+		{
+			//Set the value at location to indicate it's been shot at
+			area[yAxis][number] += FIRE_DIFFERENCE;
+			//Change the appropriate ship's "hits" to reflect this
+			checkTargets(x : number, y : yAxis)
 		}
 		//Display the updated board
 		display()
@@ -257,7 +264,7 @@ public class Board
 		//Pick random starting point
 		var x = random() % XAXIS
 		var y = random() % YAXIS
-		var orientation = random() % 2 
+		var orientation = random() % 2
 
 		//First check to see if these variables will cause a collision. If so, reroll randoms
 		while detectCollision(boat : boat, coords : (x,y), orientation : orientation)
@@ -341,7 +348,7 @@ public class Board
 	func detectCollision(boat : Boat, coords : (Int, Int), orientation : Int) -> Bool
 	{
 		var collision = false
-		
+
 		if orientation == 0 //Horizontal
 		{
 			//Check if boat will fit in array

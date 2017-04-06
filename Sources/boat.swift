@@ -1,74 +1,82 @@
 public class Boat
 {
-	//Reeeeally wishing abstract classes were a thing
-	class var symbol: String {return " "} //Symbol represenation
-	class var length: Int {return 0}
-	class var name: String {return "noone"}
-	class var num: Int {return 10} //we convert this to the symbol later!
-	public var description: String //The equivilent of a toString
-		{
-			var toReturn = ""
-			toReturn += type(of: self).name + " | Hits:"
-			//Iterate through hits and append them
-			for hit in self.hits
-			{
-				toReturn += String(hit.2) + ", "
-			}
-			return toReturn
-		}
-	var hits:[(Int, Int, Bool)]
-
-	public init ()
+	//Symbol represenation
+	class var symbol: String{return " "}
+	class var length: Int{return 0}
+	class var name: String{return "noone"}
+	//we convert this to the symbol later!
+	class var num: Int{return 10}
+	//The equivilent of a toString
+	public var description: String
 	{
-		self.hits = []
+		var toReturn = ""
+		toReturn += type(of: self).name + " | Hits:"
+		//Iterate through hits and append them
+		for hit in self.hits
+		{
+			toReturn += String(hit.2) + ", "
+		}
+		return toReturn
 	}
+	var hits:[(Int, Int, Bool)]
+	public init (){self.hits = []}
 
-	/**
-	 * Used to build the array of "hits". X and Y are coordinates, false is whether it is hit or not
-	 * Only used during construction.
+	/* FUNCTION: append
+	 * PURPOSE: Used to build the array of "hits". X and Y are coordinates, false
+	 is whether it is hit or not. Only used during construction.
+	 * PARAMS: x-> horizontal coordinate
+	 * 				 y-> vertical coordinate
 	 */
 	public func append(x : Int, y : Int)
 	{
 		self.hits.append((x, y, false))
 	}
 
-	/**
-	 * Checks to see if this boat is occupying the tile shot at.
+	/* FUNCTION: check
+	 * PURPOSE: Checks to see if this boat is occupying the tile shot at.
 	 * If so, marks coordinate as hit
+	 * PARAMS: x-> horizontal coordinate
+	 * 				 y-> vertical coordinate
 	 */
 	public func check(x : Int, y : Int)
 	{
-		for i in 0...(type(of: self).length)-1 //Iterate through spots to hit
+		//Iterate through spots to hit
+		for i in 0...(type(of: self).length)-1
 		{
 			//If the spot matches the one we are shooting at
-			if hits[i].0 == x && hits[i].1 == y //TODO name the tuple attributes
+			if hits[i].0 == x && hits[i].1 == y
 			{
 				hits[i].2 = true
-				justSunk() //Check to see if we just sunk this beast
+				//Check to see if we just sunk this boat
+				justSunk()
 			}
 		}
 	}
 
-	/**
-	 * Similar to isSunk but simply displays the message.
+	/**FUNCTION: justSunk
+	 * PURPOSE: Similar to isSunk but simply displays the message.
 	 * Called when a ship is sunk that turn.
 	 */
 	public func justSunk()
 	{
-		//TODO Make this bigger
-		if isSunk(){print("You sunk " + type(of: self).name)}
+		if isSunk()
+		{
+			print("You sunk a " + type(of: self).name + "!!!!")
+		}
 	}
 
-	/**
-	 * Checks to see if the ship is infact entirely sunken
+	/**FUNCTION: isSunk
+	 * PURPOSE: Checks to see if the ship is infact entirely sunken
+	 * RETURNS: Boolean. True if sunk, false otherwise.
 	 */
 	public func isSunk() -> Bool
 	{
 		var toReturn = true
-
-		for hit in hits //Iterate through spots to hit
+		//Iterate through spots to hit
+		for hit in hits
 		{
-			if hit.2 == false //if any of points on the ship haven't been hit yet, it has not sunk
+			//if any of points on the ship haven't been hit yet, it has not sunk
+			if hit.2 == false
 			{
 				toReturn = false
 			}

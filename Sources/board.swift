@@ -6,16 +6,16 @@ public class Board
 	/// The number of boats to have on the board
 	// generate a random sub, carrier, or tug, to a max of 5 boats
 	// between 1-5 subs, carriers, and tugs but we can have none as well
-	var SUBS = 0
-	var CARRIERS = 0 // between 1-5 carriers
-	var TUGS = 0 // between 1-5 tugboats
+	var SUBS : Int
+	var CARRIERS : Int // between 1-5 carriers
+	var TUGS : Int // between 1-5 tugboats
 	///The width of the board, minus 1 since arrays are 0 based
-	let XAXIS = 9
+	let XAXIS :Int
 	///The height of the board, minus 1 since arrays are 0 based
-	let YAXIS = 9
+	let YAXIS : Int
 
 	//The difference between "unfired" and "fired". Doesn't like static?
-	let FIRE_DIFFERENCE = 10
+	static let FIRE_DIFFERENCE = 10
 
 	///Unfired empty, Sub, carrier, and tug
 	static let UE = 10
@@ -23,10 +23,10 @@ public class Board
 	static let UC = 12
 	static let UT = 13
 	///Fired empty, Sub, carrier, and tug
-	let FE = 20
-	let FS = 21
-	let FC = 22
-	let FT = 23
+	static let FE = 20
+	static let FS = 21
+	static let FC = 22
+	static let FT = 23
 	//An array to hold boats that we can shoot at
 	var targets = [Boat]()
 	///A two dimensional area containing the board area
@@ -43,13 +43,18 @@ public class Board
 		[UE, UE, UE, UE, UE, UE, UE, UE, UE, UE]
 ]
 
-
-	/**FUNCTION: fill_harbour
+	/**FUNCTION: init
 	 * PURPOSE: Generate boats and add them to the board.
 	 * I mean it's not really a harbour. We're at war here, Stephanie!
 	 */
-	func fill_harbour()
+	public init(length : Int, width : Int)
 	{
+		SUBS = 0
+		CARRIERS = 0
+		TUGS = 0
+		XAXIS = length
+		YAXIS = width
+
 		//Seed the random() function, so random is random.
 		srand( UInt32( time( nil ) ) )
 		//Make five boats!
@@ -70,14 +75,15 @@ public class Board
 		//now, let's instantiate those boats!
 		//build_boats(subs:SUBS, cars:CARRIERS, tugs:TUGS)
 
-    //Ideal, but breaking
+    	//Ideal, but breaking
 		// build(toClone:Sub(), num:SUBS)
 		// build(toClone:Carrier(), num:CARRIERS)
 		// build(toClone:Tug(), num:TUGS)
 
-    //Confirmed working, but large
-    build_boats(sub:SUBS, car:CARRIERS, tug:TUGS)
+	    //Confirmed working, but large
+		build_boats(sub:SUBS, car:CARRIERS, tug:TUGS)
 	}
+
 	/*
 		This method is not actually used, but ideally would replace build_boats
 	*/
@@ -155,10 +161,10 @@ public class Board
 				{
 					switch area[i][j]
 					{
-						case FE: rowText += "  "
-						case FS: rowText += " " + Sub.symbol
-						case FC: rowText += " " + Carrier.symbol
-						case FT: rowText += " " + Tug.symbol
+						case Board.FE: rowText += "  "
+						case Board.FS: rowText += " " + Sub.symbol
+						case Board.FC: rowText += " " + Carrier.symbol
+						case Board.FT: rowText += " " + Tug.symbol
 							//Should never happen
 						default: rowText += " ?"
 					}
@@ -170,6 +176,8 @@ public class Board
 
 	/*FUNCTION: prompt
 		PURPOSE: Used to prompt the player where they want to shoot
+		Ideally, this would go in main.swift but it doesn't like that.
+		Really wish Swift had header files...
 	*/
 	func prompt()
 	{
@@ -179,17 +187,24 @@ public class Board
 		//Get input
 		print("Choose a letter ('?' for help):")
 		//Make sure we can assign the input to a string, else display error
-		if let letterIn = String(readLine()!)
+		if var letterIn = readLine()
 		{
+			if letterIn.characters.count == 0
+			{
+				print("Empty line? Try again, bub")
+			}
+			
 			//While we're technically handling this by only parsing the first char
 			//in the string as the entry, we really don't want them to enter words
-			if letterIn.characters.count > 1
+			else if letterIn.characters.count > 1
 			{
+				letterIn = String(letterIn)!
 				print("Your selection was invalid: ")
 				print("Please enter a single character only.\n\n")
 			}
 			else
 			{
+				letterIn = String(letterIn)!
 				if letterIn == letters[11]	// check for '?', show help menu
 				{
 					showHelp()
@@ -270,10 +285,10 @@ public class Board
 			for j in 0...XAXIS
 			{
 				//If location's value is less than "fired", or has not been shot
-				if area[i][j] < FE
+				if area[i][j] < Board.FE
 				{
 					//Set the value at location to indicate it's been shot at
-					area[i][j] += FIRE_DIFFERENCE;
+					area[i][j] += Board.FIRE_DIFFERENCE;
 					//Change the appropriate ship's "hits" to reflect this
 					checkTargets(x : j, y : i)
 				}
@@ -294,10 +309,10 @@ public class Board
 		//Get the Unicode value of the letter, starting with A=0, B=1, C=2, etc.
 		for code in String(letter).utf8 { yAxis=(Int(code)-65) }
 		//If location's value is less than "fired", or has not been shot at
-		if area[yAxis][number] < FE
+		if area[yAxis][number] < Board.FE
 		{
 			//Set the value at location to indicate it's been shot at
-			area[yAxis][number] += FIRE_DIFFERENCE;
+			area[yAxis][number] += Board.FIRE_DIFFERENCE;
 			//Change the appropriate ship's "hits" to reflect this
 			checkTargets(x : number, y : yAxis)
 		}

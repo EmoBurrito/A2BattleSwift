@@ -7,11 +7,10 @@ var playGame = true
 
 while playGame
 {
-	var myBoard = Board()
-	myBoard.display()
-	myBoard.fill_harbour()
+	var myBoard = Board(length : 9,width : 9)
 	while !victory
 	{
+		myBoard.display()
 		myBoard.prompt()
 
 		//Check to see if all ships are destroyed
@@ -19,18 +18,23 @@ while playGame
 	}
 	//Ask if they want to play again
 	print("Would you like to play again? (Y/N)")
-	var answer : String = String(readLine()!)!
-	answer = String(answer[answer.index(
-	answer.startIndex, offsetBy: 0)]).uppercased()
-
-	if answer == "Y"
-	{
-		victory = false
-	}
-	else
-	{
-		playGame = false
-	}
+	var letterIn = readLine()!
+		if letterIn.characters.count == 0
+		{
+			print("Empty line? Try again, bub")
+		}
+		else
+		{
+			letterIn = String(letterIn).uppercased()
+			if letterIn == "Y"
+			{
+				victory = false
+			}
+			else
+			{
+				playGame = false
+			}
+		}	
 }
 
 print ("Thanks for playing Command Line Battleship!")
